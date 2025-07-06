@@ -13,37 +13,39 @@ type Favorite = {
   price?: string;
   rating?: number;
 };
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const Favorites = () => {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
 
   const fetchFavorites = async () => {
-    try {
-      const res = await fetch('http://localhost:3001/api/user/favorites');
-      const data = await res.json();
-      setFavorites(data.favorites || []);
-    } catch (error) {
-      toast.error('Failed to fetch favorites');
-    }
-  };
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/user/favorites`);
+    const data = await res.json();
+    setFavorites(data.favorites || []);
+  } catch (error) {
+    toast.error('Failed to fetch favorites');
+  }
+};
 
-  const removeFavorite = async (link: string) => {
-    try {
-      const res = await fetch('http://localhost:3001/api/user/favorites', {
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ link }),
-      });
-      if (res.ok) {
-        toast.success('Removed from favorites');
-        fetchFavorites();
-      } else {
-        toast.error('Failed to remove favorite');
-      }
-    } catch (error) {
-      toast.error('Error removing favorite');
+const removeFavorite = async (link: string) => {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/user/favorites`, {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ link }),
+    });
+    if (res.ok) {
+      toast.success('Removed from favorites');
+      fetchFavorites();
+    } else {
+      toast.error('Failed to remove favorite');
     }
-  };
+  } catch (error) {
+    toast.error('Error removing favorite');
+  }
+};
+
 
   useEffect(() => {
     fetchFavorites();

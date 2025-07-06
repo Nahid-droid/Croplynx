@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { ArrowLeft, Leaf, Sprout, Mountain, PackageSearch, Heart } from 'lucide-react'; // Import Heart icon
 import { ShoppingCart } from 'lucide-react';
 import { motion } from "framer-motion";
-
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 // DataInsights komponenti
 const DataInsights = () => {
   const averagePH = 6.5;
@@ -79,24 +79,24 @@ const MarketPlace = () => {
   const getSelectedSoil = () => soilTypes.find(s => s.value === selectedSoil);
 
   // fetchRecommendations funksiyası:
-  const fetchRecommendations = async () => {
-    setLoadingProducts(true);
-    try {
-      const res = await fetch('http://localhost:3001/api/products/search?plant=' + selectedPlant + '&soil=' + selectedSoil + '&stage=' + developmentStage);
-      const data = await res.json();
-      setProducts(data.results || []);
-    } catch (error) {
-      console.error("❌ Error fetching recommendations", error);
-      toast.error("Failed to fetch recommendations from backend");
-      setProducts([]);
-    } finally {
-      setLoadingProducts(false);
-    }
-  };
+const fetchRecommendations = async () => {
+  setLoadingProducts(true);
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/products/search?plant=${selectedPlant}&soil=${selectedSoil}&stage=${developmentStage}`);
+    const data = await res.json();
+    setProducts(data.results || []);
+  } catch (error) {
+    console.error("❌ Error fetching recommendations", error);
+    toast.error("Failed to fetch recommendations from backend");
+    setProducts([]);
+  } finally {
+    setLoadingProducts(false);
+  }
+};
 
   const handleAddToFavorites = async (product) => {
     try {
-      const res = await fetch('http://localhost:3001/api/user/favorites', {
+      const res = await fetch(`${BACKEND_URL}/api/user/favorites`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -133,7 +133,7 @@ const MarketPlace = () => {
     setShowRecommendations(false);
 
     // GET request üçün query param-lar belə göndərilir:
-    const url = new URL('http://localhost:3001/api/products/search');
+   const url = new URL(`${BACKEND_URL}/api/products/search`);
     url.searchParams.append('category', selectedCategory);
     url.searchParams.append('plant', selectedPlant);
     if(selectedSoil) url.searchParams.append('soil', selectedSoil);

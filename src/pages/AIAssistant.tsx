@@ -66,11 +66,12 @@ const AIAssistant = () => {
   }, [messages]);
 
 
-  useEffect(() => {
-    fetch("http://localhost:3001/api/user/favorites")
-      .then(res => res.json())
-      .then(data => setFavorites(data.favorites || []));
-  }, []);
+useEffect(() => {
+  fetch(`${import.meta.env.VITE_BACKEND_URL}/api/user/favorites`)
+    .then(res => res.json())
+    .then(data => setFavorites(data.favorites || []));
+}, []);
+
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -100,7 +101,7 @@ const AIAssistant = () => {
   // Replicate API ilə şəkil analiz funksiyası
 const analyzePlantImage = async (base64Image: string): Promise<string> => {
   try {
-    const response = await fetch("http://localhost:3001/analyze", {
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/analyze`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ image: base64Image }),
@@ -184,11 +185,12 @@ const handleSendMessage = async () => {
   });
 
   try {
-    const response = await fetch("http://localhost:3001/api/assistant", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ messages: chatHistory }),
-    });
+    const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/assistant`, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ messages: chatHistory }),
+});
+
 
     const data = await response.json();
 
